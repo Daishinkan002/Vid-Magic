@@ -4,9 +4,7 @@ import cv2
 import pyautogui
 import pyscreenshot as scrot
 import numpy as np
-import matplotlib.pyplot as plt
-import threading
-
+import os
 
 #w,h = pyautogui.size()
 def screenrec():
@@ -30,7 +28,8 @@ def cam_rec():
     cap = cv2.VideoCapture(0)
     fourcc = cv2.VideoWriter_fourcc(*"XVID")
     out = cv2.VideoWriter("output.avi",fourcc,20.0,pyautogui.size())
-
+    cv2.namedWindow('Cam',cv2.WINDOW_NORMAL)        # Create a named window
+    
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -40,14 +39,15 @@ def cam_rec():
         screen = np.array(im)
         out.write(screen)
         print("Yup, cam is running")
-        cv2.namedWindow('Cam',cv2.WINDOW_NORMAL)        # Create a named window
         cv2.moveWindow('Cam', w_loc,h_loc)
         cv2.resizeWindow('Cam', 400, 300)
+        os.system("wmctrl -r Cam -b add,above")
         cv2.imshow('Cam', frame)
         out.write(screen) 
         if cv2.waitKey(1) == ord('q'):
             break
 
+    
     out.release
     cap.release()
     print("Done Camera")
